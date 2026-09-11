@@ -54,4 +54,5 @@ vendor/                安装依赖后生成的本地 Spine Player 文件
 
 ## 素材与运行库说明
 
-应用只读取 `spine/Q蕾米.json`、`spine/leimi.atlas`、`spine/leimi.png` 和 `spine/read.png`；`.spine` 源工程保留用于后续编辑。Spine Runtime 的使用需遵守 Esoteric Software 的运行库许可，发布者也应确认拥有角色美术及动画素材的使用权。
+应用只读取 `spine/Q蕾米.json`、`spine/leimi.atlas`、`spine/leimi.png` 和 `spine/read.png`；`.spine` 源工程保留用于后续编辑。Spine Runtime 的使用需遵守 Esoteric Software 的运行库许可
+spine动画素材来自B站https://www.bilibili.com/video/BV1NAKN6MEHi 感谢分享素材
