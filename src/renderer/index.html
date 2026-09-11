@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; font-src 'self'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>蕾米桌宠</title>
+    <link rel="stylesheet" href="../../vendor/spine-player.min.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main id="app" aria-label="蕾米桌宠">
+      <section class="todo-bubble interactive-zone" aria-labelledby="todo-title">
+        <header class="bubble-header drag-handle" title="拖动这里移动蕾米">
+          <div class="title-group">
+            <span class="title-sparkle" aria-hidden="true">✦</span>
+            <div>
+              <h1 id="todo-title">蕾米的今日清单</h1>
+              <p id="pet-message">正在思考</p>
+            </div>
+          </div>
+          <button
+            id="pin-button"
+            class="icon-button no-drag"
+            type="button"
+            title="切换保持置顶"
+            aria-label="切换保持置顶"
+            aria-pressed="true"
+          >
+            <span aria-hidden="true">⌖</span>
+          </button>
+        </header>
+
+        <form id="todo-form" class="todo-form no-drag" autocomplete="off">
+          <label class="sr-only" for="todo-input">新的待办事项</label>
+          <input
+            id="todo-input"
+            name="todo"
+            type="text"
+            maxlength="80"
+            placeholder="要和蕾米一起完成什么？"
+            aria-describedby="todo-hint"
+          />
+          <button type="submit" aria-label="添加待办">＋</button>
+        </form>
+        <p id="todo-hint" class="sr-only">最多输入 80 个字符，按回车添加</p>
+
+        <div class="todo-content no-drag">
+          <div id="empty-state" class="empty-state">
+            <span aria-hidden="true">♡</span>
+            <p>清单还是空的，写下一件小事吧</p>
+          </div>
+          <ul id="todo-list" class="todo-list" aria-label="待办事项"></ul>
+        </div>
+
+        <footer class="bubble-footer no-drag">
+          <span id="todo-count">还没有待办</span>
+          <button id="clear-completed" type="button">清除已完成</button>
+        </footer>
+      </section>
+
+      <section
+        id="pet-stage"
+        class="pet-stage interactive-zone"
+        aria-label="蕾米动画区域"
+      >
+        <div id="stage-glow" aria-hidden="true"></div>
+        <div id="spine-player" aria-label="蕾米 Spine 动画"></div>
+        <img
+          id="fallback-image"
+          src="../../spine/read.png"
+          alt="正在看本子的蕾米"
+          hidden
+        />
+        <div class="pet-toolbar no-drag" aria-label="桌宠操作">
+          <button
+            id="creation-button"
+            class="action-button primary"
+            type="button"
+            disabled
+            aria-pressed="false"
+          >
+            <span aria-hidden="true">✎</span>
+            <span class="button-label">开始创作</span>
+          </button>
+          <button
+            id="light-button"
+            class="action-button"
+            type="button"
+            disabled
+            aria-pressed="false"
+            title="开灯"
+          >
+            <span aria-hidden="true">☼</span>
+          </button>
+          <button
+            id="hide-button"
+            class="action-button"
+            type="button"
+            title="隐藏到系统托盘"
+            aria-label="隐藏到系统托盘"
+          >
+            <span aria-hidden="true">–</span>
+          </button>
+        </div>
+      </section>
+
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    </main>
+
+    <script src="../../vendor/spine-player.min.js"></script>
+    <script src="../shared/todo-store.js"></script>
+    <script src="../shared/animation-state-machine.js"></script>
+    <script src="./renderer.js"></script>
+  </body>
+</html>

@@ -1,0 +1,51 @@
+{
+  "name": "remielle-desktop-pet",
+  "version": "0.1.0",
+  "description": "基于 Spine 动画的蕾米 Windows 桌宠与本地待办助手",
+  "author": "Remielle Pet Contributors",
+  "license": "UNLICENSED",
+  "main": "src/main/main.cjs",
+  "private": true,
+  "scripts": {
+    "postinstall": "node scripts/copy-vendor.mjs",
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "test": "node --test tests/todo-store.test.cjs tests/animation-state-machine.test.cjs",
+    "check": "npm run test && node scripts/validate-assets.mjs",
+    "dist": "npm run check && electron-builder --win nsis",
+    "dist:portable": "npm run check && electron-builder --win portable"
+  },
+  "devDependencies": {
+    "@esotericsoftware/spine-player": "4.2.120",
+    "electron": "40.8.1",
+    "electron-builder": "25.1.8"
+  },
+  "build": {
+    "appId": "com.remielle.desktop-pet",
+    "productName": "蕾米桌宠",
+    "artifactName": "Remielle-Pet-${version}-${arch}.${ext}",
+    "asar": true,
+    "files": [
+      "src/**/*",
+      "spine/**/*",
+      "vendor/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "spine/read.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "蕾米桌宠"
+    }
+  }
+}
