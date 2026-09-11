@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; font-src 'self'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>蕾米桌宠</title>
+    <link rel="stylesheet" href="../../vendor/spine-player.min.css" />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles-v2.css" />
+  </head>
+  <body>
+    <main id="app" aria-label="蕾米桌宠">
+      <section class="todo-bubble interactive-zone" aria-labelledby="todo-title">
+        <header class="bubble-header drag-handle" title="拖动这里移动蕾米">
+          <div class="title-group">
+            <img
+              class="title-sparkle"
+              src="../../assets/remielle-star.png"
+              alt=""
+              aria-hidden="true"
+            />
+            <div>
+              <h1 id="todo-title">蕾米的今日清单</h1>
+              <p id="pet-message">正在思考</p>
+            </div>
+          </div>
+          <div class="header-actions no-drag">
+            <button
+              id="settings-button"
+              class="icon-button"
+              type="button"
+              title="打开桌宠设置"
+              aria-label="打开桌宠设置"
+              aria-expanded="false"
+              aria-controls="settings-panel"
+            >
+              <span class="settings-gear" aria-hidden="true">&#9881;</span><span>&#35774;&#32622;</span>
+            </button>
+            <button
+              id="pin-button"
+              class="icon-button"
+              type="button"
+              title="切换保持置顶"
+              aria-label="切换保持置顶"
+              aria-pressed="true"
+            >
+              <span aria-hidden="true">⌖</span>
+            </button>
+          </div>
+        </header>
+
+        <section
+          id="settings-panel"
+          class="settings-panel no-drag"
+          aria-labelledby="settings-title"
+          hidden
+        >
+          <div class="settings-heading">
+            <div>
+              <h2 id="settings-title">桌宠设置</h2>
+              <p>选择你想保留的互动</p>
+            </div>
+            <button
+              id="settings-close"
+              class="settings-close"
+              type="button"
+              aria-label="关闭设置"
+            >×</button>
+          </div>
+
+          <label class="size-setting" for="pet-size">
+            <span>宠物大小</span>
+            <output id="pet-size-output" for="pet-size">100%</output>
+          </label>
+          <input id="pet-size" type="range" min="70" max="130" step="5" value="100" />
+
+          <label class="size-setting" for="bubble-size">
+            <span>&#22791;&#24536;&#26694;&#22823;&#23567;</span>
+            <output id="bubble-size-output" for="bubble-size">100%</output>
+          </label>
+          <input id="bubble-size" type="range" min="70" max="130" step="5" value="100" />
+
+          <label class="setting-toggle">
+            <input id="gaze-tracking" type="checkbox" checked />
+            <span>
+              <strong>视线跟随鼠标</strong>
+              <small>主题动画中会自动减弱</small>
+            </span>
+          </label>
+
+          <fieldset class="toolbar-choices">
+            <legend>悬浮操作栏</legend>
+            <label>
+              <input id="show-creation" type="checkbox" checked />
+              <span>创作</span>
+            </label>
+            <label>
+              <input id="show-light" type="checkbox" checked />
+              <span>灯光</span>
+            </label>
+            <label>
+              <input id="show-hide" type="checkbox" checked />
+              <span>隐藏</span>
+            </label>
+          </fieldset>
+          <p class="settings-note">操作栏只在鼠标移到宠物上时显示。</p>
+          <button id="reset-settings" class="reset-settings" type="button">恢复默认设置</button>
+        </section>
+
+        <form id="todo-form" class="todo-form no-drag" autocomplete="off">
+          <label class="sr-only" for="todo-input">新的待办事项</label>
+          <input
+            id="todo-input"
+            name="todo"
+            type="text"
+            maxlength="80"
+            placeholder="要和蕾米一起完成什么？"
+            aria-describedby="todo-hint"
+          />
+          <button type="submit" aria-label="添加待办">＋</button>
+        </form>
+        <p id="todo-hint" class="sr-only">最多输入 80 个字符，按回车添加</p>
+        <div id="input-effects" class="input-effects" aria-hidden="true"></div>
+
+        <div class="todo-content no-drag">
+          <div id="empty-state" class="empty-state">
+            <span aria-hidden="true">♡</span>
+            <p>清单还是空的，写下一件小事吧</p>
+          </div>
+          <ul id="todo-list" class="todo-list" aria-label="待办事项"></ul>
+        </div>
+
+        <footer class="bubble-footer no-drag">
+          <span id="todo-count">还没有待办</span>
+          <button id="clear-completed" type="button">清除已完成</button>
+        </footer>
+      </section>
+
+      <section
+        id="pet-stage"
+        class="pet-stage interactive-zone"
+        aria-label="蕾米动画区域，可按住拖动"
+      >
+        <div id="pet-visual" class="pet-visual" aria-hidden="true">
+          <div id="stage-glow"></div>
+          <div id="spine-player" aria-label="蕾米 Spine 动画"></div>
+          <img
+            id="fallback-image"
+            src="../../spine/read.png"
+            alt="正在看本子的蕾米"
+            hidden
+          />
+        </div>
+        <div id="confetti-layer" class="confetti-layer" aria-hidden="true"></div>
+
+        <div id="pet-toolbar" class="pet-toolbar no-drag" aria-label="桌宠操作">
+          <button
+            id="creation-button"
+            class="action-button primary"
+            type="button"
+            disabled
+            aria-pressed="false"
+          >
+            <span aria-hidden="true">✎</span>
+            <span class="button-label">开始创作</span>
+          </button>
+          <button
+            id="light-button"
+            class="action-button"
+            type="button"
+            disabled
+            aria-pressed="false"
+            title="开灯"
+          >
+            <span aria-hidden="true">☼</span>
+          </button>
+          <button
+            id="hide-button"
+            class="action-button"
+            type="button"
+            title="隐藏到系统托盘"
+            aria-label="隐藏到系统托盘"
+          >
+            <span aria-hidden="true">–</span>
+          </button>
+        </div>
+      </section>
+
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    </main>
+
+    <script src="../../vendor/spine-player.min.js"></script>
+    <script src="../shared/todo-store.js"></script>
+    <script src="../shared/preferences-store.js"></script>
+    <script src="../shared/animation-state-machine-v2.js"></script>
+    <script src="./renderer-v2.js"></script>
+  </body>
+</html>

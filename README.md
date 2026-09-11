@@ -1,58 +1,107 @@
 # 蕾米桌宠
 
-一个 Windows 透明桌宠：使用项目内的 Spine 4.2 动画展示蕾米，在头顶提供粉色渐变待办对话框，并把待办保存在本机。
+一个 Windows 透明桌宠：使用项目内的 Spine 4.2 动画展示蕾米，在头顶提供粉色渐变待办对话框，并把待办和个性化设置保存在本机。
 
-## 快速开始
+当前版本为 0.2.0 / release2。第一版源码和 `release/` 产物继续保留，第二版使用独立的 v2 入口和 `release2/` 构建目录，不覆盖第一版。
 
-需要 Node.js 20 或更高版本。
+## 直接下载使用
+
+不需要安装 Node.js，也不需要会编程。下载 [`release2/Remielle-Pet-release2-0.2.0-x64.exe`](release2/Remielle-Pet-release2-0.2.0-x64.exe) 后双击运行。
+
+第一次使用请阅读：[EXE 使用说明](EXE使用说明.md)。归档的第一版 EXE 位于 `release/`，建议普通用户优先下载功能更完整的 release2。
+
+release2 发布文件：
+
+- 文件：`release2/Remielle-Pet-release2-0.2.0-x64.exe`
+- 大小：90,435,365 字节（约 86.25 MiB）
+- SHA256：`A7E011C2DCF808C8F72A301489D5D3A91604403D6D846DBE8402878A4C114DA0`
+
+## release2 功能
+
+- 设置按钮：分别调整宠物与备忘框大小、开关视线跟随，自选悬浮操作栏中的创作、灯光和隐藏按钮。
+- 清爽桌面：操作栏不使用时完全隐藏，只保留宠物和待办事项。
+- 动画轮换：新增待办后在拿笔创作和抬头思考反馈之间轮换。
+- 完成庆祝：播放 `d_win -> c` 动画，同时落下粉色、紫色和黄色彩纸。
+- 输入趣味：输入待办时播放思考动作，并冒出问号、四角星、爱心、思考气泡和铅笔，装饰层不会占用 Spine 动画轨道。
+- 视线追踪：使用模型的两只瞳孔微动骨骼跟随全屏鼠标，创作和庆祝动画中自动减弱。
+- 自由拖动：既可拖动待办标题，也可直接按住宠物移动窗口；使用系统绝对鼠标坐标，连续拖动不会产生累积偏移。
+- 紧凑布局：备忘框会随两个缩放比例保持在宠物头顶附近，拖动窗口不会改变两者距离。
+- 粉色四角星图标：窗口、托盘和打包程序统一使用清单标题旁粉紫渐变圆角方块 + 白色四角星的图标。
+- 本地保存：待办、窗口位置、宠物大小、备忘框大小和其他设置重启后继续保留。
+
+## 动画分配
+
+| 动画 | 用途 |
+| --- | --- |
+| `a` | 默认思考、鼠标离开后的基础状态 |
+| `a_win` | 新增待办后的拿笔准备反馈，与抬头思考轮换 |
+| `b` | 抬头思考、输入待办时的反馈 |
+| `c` | 看着本子高兴、待办完成后的庆祝状态 |
+| `d` | 开始创作、创作模式循环 |
+| `d_win` | 创作完成或待办完成后的完成反馈 |
+| `e` | 可爱又可怜地抬头，用于悬停变化和隐藏前反馈 |
+| `light` | 开灯叠加动画，由悬浮操作栏控制 |
+
+## 使用设置
+
+点击待办框右上方的设置按钮即可：
+
+- 宠物大小和备忘框大小都可在 70% 到 130% 之间独立调整；
+- 可关闭视线跟随；
+- 可决定悬浮操作栏是否显示开始创作开灯和隐藏；
+- 可一键恢复默认设置。
+
+操作栏只在鼠标悬停宠物时出现。拖动待办标题空白处或直接拖动宠物，都能移动整个桌宠窗口。
+
+## 本地开发
+
+需要 Node.js 20 或更高版本：
 
 ```powershell
 npm install
 npm start
 ```
 
-常用命令：
+运行自动检查：
 
 ```powershell
-npm test           # 运行待办和动画状态机测试
-npm run check      # 测试并检查 Spine 资源
-npm run dist       # 生成 Windows NSIS 安装包
-npm run dist:portable # 生成便携版
+npm run check
 ```
 
-构建产物位于 `release/`。首次 `npm install` 会把 Spine Player 4.2 的浏览器运行文件复制到 `vendor/`，因此运行时不依赖 CDN 或网络。
+生成无需安装的便携 EXE：
 
-## 使用方式
+```powershell
+npm run dist:portable
+```
 
-- 在对话框输入待办并按回车或 `＋` 添加。
-- 点击待办左侧圆框切换完成状态，移入后可点右侧 `×` 删除。
-- 鼠标移到蕾米身上会从思考切换为抬头思考；持续悬停会切换为可怜可爱的抬头动作。
-- 点击“开始创作”播放拿笔准备和创作动画，再次点击播放创作完成与高兴动画。
-- 点击 `☼` 开灯或关灯；点击 `–` 隐藏到系统托盘。
-- 拖动对话框标题栏可移动桌宠，右键桌宠或托盘图标可打开系统菜单。
+产物位于 `release2/`。Spine Player 浏览器运行文件保存在 `vendor/`，应用运行时不依赖 CDN。
 
 ## 功能文档
 
-- [桌面窗口与托盘](docs/features/desktop-window.md)
-- [Spine 动画状态机](docs/features/spine-animation.md)
-- [待办事项对话框](docs/features/todo-dialog.md)
-- [交互、数据与无障碍](docs/features/interaction-and-data.md)
-- [打包与发布](docs/features/build-and-release.md)
+第一版文档继续保留在 `docs/features/`。release2 新增文档：
 
-## 项目结构
+- [设置与个性化](docs/features/settings-and-customization.md)
+- [动画反馈、Emoji 与彩纸](docs/features/feedback-effects.md)
+- [视线跟踪与窗口拖动](docs/features/gaze-and-drag.md)
+- [release2 打包与 EXE 发布](docs/features/build-and-release2.md)
+
+## 主要目录
 
 ```text
-spine/                 Spine 工程、JSON、图集与备用图片
-src/main/              Electron 主进程、透明窗口、托盘与安全 IPC
-src/renderer/          桌宠界面、样式和交互
-src/shared/            可测试的待办存储与动画状态机
-scripts/               运行库复制、资源校验脚本
-tests/                 Node 内置测试
-docs/features/         每项功能对应的 README 文档
-vendor/                安装依赖后生成的本地 Spine Player 文件
+assets/                release2 星星图标
+release/               第一版可运行 EXE
+release2/              第二版可运行 EXE
+scripts/               素材与发布校验脚本
+spine/                 Spine 动画素材
+src/main/              Electron 主进程与预加载脚本
+src/renderer/          v1、v2 页面和交互
+src/shared/            待办、设置和动画状态逻辑
+tests/                 自动测试
+vendor/                本地 Spine Player 运行文件
 ```
 
-## 素材与运行库说明
+## 素材来源
 
-应用只读取 `spine/Q蕾米.json`、`spine/leimi.atlas`、`spine/leimi.png` 和 `spine/read.png`；`.spine` 源工程保留用于后续编辑。Spine Runtime 的使用需遵守 Esoteric Software 的运行库许可
-spine动画素材来自B站https://www.bilibili.com/video/BV1NAKN6MEHi 感谢分享素材
+Spine 动画素材来源：[Bilibili BV1NAKN6MEHi](https://www.bilibili.com/video/BV1NAKN6MEHi)。
+
+应用使用 Spine Runtime，发布与再分发时应同时遵守 Esoteric Software 的运行库许可及素材来源页面标注的要求。

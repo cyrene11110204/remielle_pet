@@ -3,10 +3,15 @@ node_modules/
 .electron-cache/
 .builder-electron-cache/
 .electron-builder-cache/
-release/
+release/*
+!release/*.exe
+release2/*
+!release2/*.exe
 dist/
 build/*.png
 build/*.jpg
 *.log
 .DS_Store
 Thumbs.db
+release/
+release2/

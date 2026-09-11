@@ -1,17 +1,18 @@
 {
   "name": "remielle-desktop-pet",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "基于 Spine 动画的蕾米 Windows 桌宠与本地待办助手",
   "author": "Remielle Pet Contributors",
   "license": "UNLICENSED",
-  "main": "src/main/main.cjs",
+  "main": "src/main/main-v2.cjs",
   "private": true,
   "scripts": {
-    "postinstall": "node scripts/copy-vendor.mjs",
+    "postinstall": "node scripts/copy-vendor.mjs && node scripts/generate-star-icon.mjs",
+    "generate:icon": "node scripts/generate-star-icon.mjs",
     "start": "electron .",
     "dev": "electron . --dev",
-    "test": "node --test tests/todo-store.test.cjs tests/animation-state-machine.test.cjs",
-    "check": "npm run test && node scripts/validate-assets.mjs",
+    "test": "node --test tests/todo-store.test.cjs tests/preferences-store.test.cjs tests/animation-state-machine.test.cjs tests/release2-animation.test.cjs",
+    "check": "npm run test && node scripts/validate-assets.mjs && node scripts/validate-release2.mjs",
     "dist": "npm run check && electron-builder --win nsis",
     "dist:portable": "npm run check && electron-builder --win portable"
   },
@@ -23,22 +24,23 @@
   "build": {
     "appId": "com.remielle.desktop-pet",
     "productName": "蕾米桌宠",
-    "artifactName": "Remielle-Pet-${version}-${arch}.${ext}",
+    "artifactName": "Remielle-Pet-release2-${version}-${arch}.${ext}",
     "asar": true,
     "files": [
       "src/**/*",
       "spine/**/*",
       "vendor/**/*",
+      "assets/**/*",
       "package.json"
     ],
     "directories": {
-      "output": "release"
+      "output": "release2"
     },
     "win": {
       "target": [
         "nsis"
       ],
-      "icon": "spine/read.png"
+      "icon": "assets/remielle-star.png"
     },
     "nsis": {
       "oneClick": false,
