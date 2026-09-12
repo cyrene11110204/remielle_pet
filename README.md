@@ -8,7 +8,16 @@
 
 不需要安装 Node.js，也不需要会编程。打开 [GitHub Releases](https://github.com/cyrene11110204/remielle_pet/releases)，在最新版的 Assets 中下载 `Remielle-Pet-release2-0.2.2-x64.exe`，然后双击运行。
 
-第一次使用请阅读：[EXE 使用说明](EXE使用说明.md)。第一版源码仍保留在仓库历史中，普通用户请下载功能更完整的 release2。
+## EXE 使用说明
+
+1. 在 [release2 0.2.2 发布页面](https://github.com/cyrene11110204/remielle_pet/releases/tag/release2-0.2.2) 下载 `Remielle-Pet-release2-0.2.2-x64.exe`。
+2. 下载完成后直接双击 EXE，不需要安装 Node.js，也不需要安装程序。
+3. 如果 Windows 显示“Windows 已保护你的电脑”，请先确认文件名和下方 SHA256，然后点击“更多信息”与“仍要运行”。
+4. 在“蕾米的今日清单”输入内容，按回车或点击 `＋` 添加；点击左侧方框完成待办，点击“清除已完成”批量删除。
+5. 按住宠物身体或待办框标题空白处即可移动整个桌宠；点击齿轮可调整宠物与备忘框大小。
+6. 需要恢复或退出时，使用 Windows 任务栏右下角的粉色四角星托盘图标。
+
+更完整的图文式操作与常见问题仍保留在：[EXE 详细使用说明](EXE使用说明.md)。第一版源码继续保留，普通用户请下载功能更完整的 release2。
 
 release2 0.2.2 发布文件：
 
@@ -59,9 +68,13 @@ release2 0.2.2 发布文件：
 需要 Node.js 20 或更高版本：
 
 ```powershell
+git clone https://github.com/cyrene11110204/remielle_pet.git
+cd remielle_pet
 npm install
 npm start
 ```
+
+如果已经拉取过项目，在项目目录执行 `git pull origin main` 即可更新源码。仓库中的 EXE 使用方式也直接记录在本 README 前部；可运行 EXE 本体仍通过 GitHub Releases 下载，不会随普通 `git pull` 下载。
 
 运行自动检查：
 
