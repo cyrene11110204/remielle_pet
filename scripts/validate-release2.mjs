@@ -38,7 +38,7 @@ for (const bone of ["眼_瞳孔_微动", "眼_瞳孔L_微动"]) {
   if (!boneNames.has(bone)) throw new Error(`Missing gaze bone: ${bone}`);
 }
 
-if (packageJson.version !== "0.2.1") throw new Error("release2 bugfix version must be 0.2.1");
+if (packageJson.version !== "0.2.2") throw new Error("release2 bugfix version must be 0.2.2");
 if (packageJson.main !== "src/main/main-v2.cjs") throw new Error("release2 main entry is incorrect");
 if (packageJson.build?.directories?.output !== "release2") {
   throw new Error("release2 output directory is incorrect");
@@ -69,6 +69,14 @@ for (const source of [mainScript, preloadScript, rendererScript]) {
   if (source.includes("window:drag-start") || source.includes("window:drag-move")) {
     throw new Error("Legacy frame-by-frame window dragging must not return");
   }
+}
+for (const source of [mainScript, preloadScript, rendererScript]) {
+  if (source.includes("setIgnoreMouseEvents") || source.includes("setMousePassthrough")) {
+    throw new Error("release2 must not dynamically disable mouse input");
+  }
+}
+if (!rendererStyles.includes("top: 96px")) {
+  throw new Error("Pet drag region must stay below the memo interaction area");
 }
 if (!mainScript.includes("screen.getCursorScreenPoint()")) {
   throw new Error("Main process cursor sampling is required for gaze and hover tracking");

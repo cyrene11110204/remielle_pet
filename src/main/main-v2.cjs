@@ -230,7 +230,6 @@ function createWindow() {
   });
 
   mainWindow.setAlwaysOnTop(settings.alwaysOnTop !== false, "floating");
-  mainWindow.setIgnoreMouseEvents(true, { forward: true });
   mainWindow.loadURL(`${APP_SCHEME}://app/src/renderer/index-v2.html`);
 
   mainWindow.once("ready-to-show", () => {
@@ -307,11 +306,6 @@ function registerIpc() {
       visible: mainWindow.isVisible(),
       version: app.getVersion()
     };
-  });
-
-  ipcMain.on("window:set-ignore-mouse-events", (event, ignore) => {
-    if (!isTrustedSender(event)) return;
-    mainWindow.setIgnoreMouseEvents(Boolean(ignore), { forward: Boolean(ignore) });
   });
 
   ipcMain.on("window:hide", (event) => {

@@ -2,9 +2,6 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("remielleDesktop", {
   getWindowState: () => ipcRenderer.invoke("window:get-state"),
-  setMousePassthrough: (ignore) => {
-    ipcRenderer.send("window:set-ignore-mouse-events", Boolean(ignore));
-  },
 
   hide: () => ipcRenderer.send("window:hide"),
   quit: () => ipcRenderer.send("window:quit"),

@@ -75,7 +75,6 @@
   let lightOn = false;
   let toastTimer = null;
   let lastCharmAt = 0;
-  let passthrough = null;
   let petPointerInside = false;
   let removeCursorListener = null;
 
@@ -404,25 +403,6 @@
     showToast("已切换到备用图片，请查看运行日志");
   }
 
-  function isInteractivePoint(clientX, clientY) {
-    return document
-      .elementsFromPoint(clientX, clientY)
-      .some((element) => element.closest?.(".interactive-zone"));
-  }
-
-  function updateMousePassthrough(ignore) {
-    if (passthrough === ignore) return;
-    passthrough = ignore;
-    desktop?.setMousePassthrough(ignore);
-  }
-
-  function bindMousePassthrough() {
-    document.addEventListener("mousemove", (event) => {
-      updateMousePassthrough(!isInteractivePoint(event.clientX, event.clientY));
-    }, { passive: true });
-    document.addEventListener("mouseleave", () => updateMousePassthrough(true));
-  }
-
   function updatePetPointerState(cursor) {
     if (!cursor) return;
     const rect = elements.petStage.getBoundingClientRect();
@@ -545,6 +525,5 @@
 
   applyPreferences(preferences);
   renderTodos();
-  bindMousePassthrough();
   initializeSpine();
 })();

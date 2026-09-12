@@ -5,24 +5,24 @@
 ## 一、下载最新版
 
 1. 打开项目的 [GitHub Releases 页面](https://github.com/cyrene11110204/remielle_pet/releases)。
-2. 打开标题中带有 `release2 0.2.1` 的最新版。
+2. 打开标题中带有 `release2 0.2.2` 的最新版。
 3. 找到页面下方的 Assets（资源）区域。
-4. 点击 `Remielle-Pet-release2-0.2.1-x64.exe` 开始下载。
+4. 点击 `Remielle-Pet-release2-0.2.2-x64.exe` 开始下载。
 5. 等待浏览器下载完成，请不要在下载未完成时双击。
 
 不要在仓库文件列表中寻找 EXE；大文件通过 GitHub Release 单独提供。第一版源码仍保留，日常使用请下载 release2 最新版。
 
 最新版文件校验信息：
 
-- 文件大小：90,434,814 字节（约 86.25 MiB）
-- SHA256：`9E649E9569FFACF5987CABB8603963D90F870B5C2F83FBE66E2E0DC942B39E41`
+- 文件大小：90,433,935 字节（约 86.24 MiB）
+- SHA256：`C05D4E05CCE43069D010CA88B9F7CD3040297B073374CE6403EDF78D265CE543`
 
 普通使用时可以跳过校验；如果浏览器、安全软件或他人提示文件异常，请先核对文件名、大小和 SHA256，不一致时不要运行。
 
 ## 二、启动桌宠
 
 1. 打开电脑的下载文件夹。
-2. 找到刚下载的 `Remielle-Pet-release2-0.2.1-x64.exe`。
+2. 找到刚下载的 `Remielle-Pet-release2-0.2.2-x64.exe`。
 3. 双击这个文件。
 4. 稍等几秒，蕾米会出现在屏幕右下角。
 
@@ -32,7 +32,7 @@
 
 程序目前没有商业代码签名，Windows 可能显示Windows 已保护你的电脑。
 
-1. 确认文件来自本项目 GitHub Releases 的 `release2 0.2.1`。
+1. 确认文件来自本项目 GitHub Releases 的 `release2 0.2.2`。
 2. 点击提示窗口中的更多信息。
 3. 点击仍要运行。
 

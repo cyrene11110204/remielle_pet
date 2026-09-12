@@ -2,13 +2,13 @@
 
 ## 版本隔离
 
-- package.json 版本为 0.2.1。
+- package.json 版本为 0.2.2。
 - 第一版源码入口继续保留为 main.cjs、index.html 和 renderer.js。
 - release2 使用 main-v2.cjs、preload-v2.cjs、index-v2.html 和 renderer-v2.js。
 - 本地构建输出到 release2/。
-- 便携版文件名为 Remielle-Pet-release2-0.2.1-x64.exe。
+- 便携版文件名为 Remielle-Pet-release2-0.2.2-x64.exe。
 
-0.2.1 是 release2 的拖动修复版本，不覆盖第一版源码。
+0.2.2 是 release2 的拖动与待办交互修复版本，不覆盖第一版源码。
 
 ## 检查与打包
 
@@ -38,13 +38,13 @@ gh auth login
 登录后，在仓库根目录执行：
 
 ~~~powershell
-gh release create release2 release2/Remielle-Pet-release2-0.2.1-x64.exe --title "release2 0.2.1" --notes-file RELEASE_NOTES_release2.md
+gh release create release2-0.2.2 release2/Remielle-Pet-release2-0.2.2-x64.exe --title "release2 0.2.2" --notes-file RELEASE_NOTES_release2.md --latest
 ~~~
 
-如果 release2 标签已经存在，替换 Assets 中的同名文件：
+如果 `release2-0.2.2` 标签已经存在，替换 Assets 中的同名文件：
 
 ~~~powershell
-gh release upload release2 release2/Remielle-Pet-release2-0.2.1-x64.exe --clobber
+gh release upload release2-0.2.2 release2/Remielle-Pet-release2-0.2.2-x64.exe --clobber
 ~~~
 
 ## 发布前验证
@@ -52,7 +52,8 @@ gh release upload release2 release2/Remielle-Pet-release2-0.2.1-x64.exe --clobbe
 1. npm run check 全部通过。
 2. 分别在 70%、100%、130% 宠物尺寸下拖动宠物。
 3. 拖动前后确认宠物和对话框距离不变，跨不同 DPI 显示器时也检查一次。
-4. 检查设置面板、输入装饰、视线、完成动画和彩纸。
-5. 启动便携 EXE，确认图标、托盘和本地资源。
-6. 记录 EXE 大小与 SHA256，并同步到 README 和 EXE 使用说明。
-7. 推送源码提交，再用 GitHub CLI 上传 EXE 到 Release。
+4. 修改宠物和备忘框大小后，验证第一条待办可完成，并验证“清除已完成”可删除所有已完成项目。
+5. 检查设置面板、输入装饰、视线、完成动画和彩纸。
+6. 启动便携 EXE，确认图标、托盘和本地资源。
+7. 记录 EXE 大小与 SHA256，并同步到 README 和 EXE 使用说明。
+8. 推送源码提交，再用 GitHub CLI 上传 EXE 到 Release。
