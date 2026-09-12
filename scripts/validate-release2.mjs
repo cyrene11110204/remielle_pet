@@ -38,7 +38,7 @@ for (const bone of ["眼_瞳孔_微动", "眼_瞳孔L_微动"]) {
   if (!boneNames.has(bone)) throw new Error(`Missing gaze bone: ${bone}`);
 }
 
-if (packageJson.version !== "0.2.0") throw new Error("release2 version must be 0.2.0");
+if (packageJson.version !== "0.2.1") throw new Error("release2 bugfix version must be 0.2.1");
 if (packageJson.main !== "src/main/main-v2.cjs") throw new Error("release2 main entry is incorrect");
 if (packageJson.build?.directories?.output !== "release2") {
   throw new Error("release2 output directory is incorrect");
@@ -59,14 +59,19 @@ if (!rendererScript.includes("--bubble-scale") || !rendererScript.includes("--bu
 if (!rendererStyles.includes("translate3d(0, var(--bubble-offset-y), 0)")) {
   throw new Error("Memo and pet spacing is not controlled by one stable transform");
 }
-if (rendererScript.includes("event.screenX") || rendererScript.includes("event.screenY")) {
-  throw new Error("Renderer drag must not use window-relative screen coordinates");
+if (!rendererHtml.includes('id="pet-drag-region"')) {
+  throw new Error("Missing native whole-window pet drag region");
 }
-if (!mainScript.includes("screen.getCursorScreenPoint()") || mainScript.includes("point.x - dragState.pointerX")) {
-  throw new Error("Window drag must use absolute OS cursor coordinates from the main process");
+if (!rendererStyles.includes(".pet-drag-region") || !rendererStyles.includes("-webkit-app-region: drag")) {
+  throw new Error("Pet dragging must use Electron's native draggable window region");
 }
-if (!preloadScript.includes('moveDrag: () => ipcRenderer.send("window:drag-move")')) {
-  throw new Error("Preload drag API must not accept accumulated pointer coordinates");
+for (const source of [mainScript, preloadScript, rendererScript]) {
+  if (source.includes("window:drag-start") || source.includes("window:drag-move")) {
+    throw new Error("Legacy frame-by-frame window dragging must not return");
+  }
+}
+if (!mainScript.includes("screen.getCursorScreenPoint()")) {
+  throw new Error("Main process cursor sampling is required for gaze and hover tracking");
 }
 const gazeX = Number(rendererScript.match(/GAZE_OFFSET_X\s*=\s*(\d+)/)?.[1]);
 const gazeY = Number(rendererScript.match(/GAZE_OFFSET_Y\s*=\s*(\d+)/)?.[1]);
@@ -74,19 +79,21 @@ if (!Number.isFinite(gazeX) || !Number.isFinite(gazeY) || gazeX > 10 || gazeY > 
   throw new Error(`Gaze range is too large: ${gazeX} x ${gazeY}`);
 }
 
-const releaseHash = "A7E011C2DCF808C8F72A301489D5D3A91604403D6D846DBE8402878A4C114DA0";
-const releaseBytes = await readFile(
-  path.join(projectRoot, "release2", "Remielle-Pet-release2-0.2.0-x64.exe")
-);
-const actualReleaseHash = createHash("sha256").update(releaseBytes).digest("hex").toUpperCase();
-if (actualReleaseHash !== releaseHash) {
-  throw new Error(`release2 EXE hash mismatch: ${actualReleaseHash}`);
+const releaseArtifact = "Remielle-Pet-release2-" + packageJson.version + "-x64.exe";
+let releaseHash = null;
+try {
+  const releaseBytes = await readFile(path.join(projectRoot, "release2", releaseArtifact));
+  releaseHash = createHash("sha256").update(releaseBytes).digest("hex").toUpperCase();
+} catch (error) {
+  if (error?.code !== "ENOENT") throw error;
 }
 const sourceLine = "Spine 动画素材来源：[Bilibili BV1NAKN6MEHi](https://www.bilibili.com/video/BV1NAKN6MEHi)。";
 for (const [name, document] of [["README.md", readme], ["EXE使用说明.md", exeGuide]]) {
   if (document.length < 500) throw new Error(`${name} is unexpectedly empty`);
   if (!document.includes("备忘框大小")) throw new Error(`${name} does not explain memo scaling`);
-  if (!document.includes(releaseHash)) throw new Error(`${name} does not contain the release hash`);
+  if (releaseHash && !document.includes(releaseHash)) {
+    throw new Error(name + " does not contain the current release hash");
+  }
   if (!document.includes(sourceLine)) throw new Error(`${name} does not contain the requested source line`);
   if (document.includes("感谢")) throw new Error(`${name} contains an unwanted thank-you statement`);
 }
@@ -102,8 +109,7 @@ const requiredFiles = [
   "src/shared/preferences-store.js",
   "assets/remielle-star.svg",
   "assets/remielle-star.png",
-  "release/Remielle-Pet-0.1.0-x64.exe",
-  "release2/Remielle-Pet-release2-0.2.0-x64.exe"
+  "release/Remielle-Pet-0.1.0-x64.exe"
 ];
 await Promise.all(requiredFiles.map(async (relativePath) => {
   const fileInfo = await stat(path.join(projectRoot, relativePath));
@@ -117,4 +123,8 @@ await Promise.all([
   "docs/features/build-and-release2.md"
 ].map((relativePath) => access(path.join(projectRoot, relativePath))));
 
-console.log("Release2 source, settings, memo scale, gaze range, icon, docs, EXEs, and preserved v1 files OK.");
+console.log(
+  releaseHash
+    ? "Release2 source and " + releaseArtifact + " (" + releaseHash + ") are valid."
+    : "Release2 source is valid; " + releaseArtifact + " has not been built yet."
+);

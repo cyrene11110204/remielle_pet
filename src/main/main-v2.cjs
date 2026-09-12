@@ -24,7 +24,6 @@ let tray = null;
 let isQuitting = false;
 let savePositionTimer = null;
 let cursorTrackingTimer = null;
-let dragState = null;
 let settings = {};
 
 // Keep normal launches single-instance, but allow the automated release smoke test
@@ -129,7 +128,6 @@ function registerLocalProtocol() {
 function isTrustedSender(event) {
   return mainWindow && !mainWindow.isDestroyed() && event.sender === mainWindow.webContents;
 }
-
 
 function broadcastWindowState() {
   if (!mainWindow || mainWindow.isDestroyed()) return;
@@ -312,36 +310,8 @@ function registerIpc() {
   });
 
   ipcMain.on("window:set-ignore-mouse-events", (event, ignore) => {
-    if (!isTrustedSender(event) || dragState) return;
+    if (!isTrustedSender(event)) return;
     mainWindow.setIgnoreMouseEvents(Boolean(ignore), { forward: Boolean(ignore) });
-  });
-
-  ipcMain.on("window:drag-start", (event) => {
-    if (!isTrustedSender(event)) return;
-    const cursor = screen.getCursorScreenPoint();
-    const [windowX, windowY] = mainWindow.getPosition();
-    dragState = {
-      pointerX: cursor.x,
-      pointerY: cursor.y,
-      windowX,
-      windowY
-    };
-    mainWindow.setIgnoreMouseEvents(false);
-  });
-
-  ipcMain.on("window:drag-move", (event) => {
-    if (!isTrustedSender(event) || !dragState) return;
-    const cursor = screen.getCursorScreenPoint();
-    const position = clampWindowPosition(
-      dragState.windowX + cursor.x - dragState.pointerX,
-      dragState.windowY + cursor.y - dragState.pointerY
-    );
-    mainWindow.setPosition(position.x, position.y);
-  });
-
-  ipcMain.on("window:drag-end", (event) => {
-    if (!isTrustedSender(event)) return;
-    dragState = null;
   });
 
   ipcMain.on("window:hide", (event) => {

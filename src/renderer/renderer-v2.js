@@ -76,10 +76,7 @@
   let toastTimer = null;
   let lastCharmAt = 0;
   let passthrough = null;
-  let dragPointerId = null;
-  let dragHandle = null;
-  let dragMoveFrame = null;
-  let dragMovePending = false;
+  let petPointerInside = false;
   let removeCursorListener = null;
 
   function clamp(value, minimum, maximum) {
@@ -414,7 +411,7 @@
   }
 
   function updateMousePassthrough(ignore) {
-    if (passthrough === ignore || dragPointerId !== null) return;
+    if (passthrough === ignore) return;
     passthrough = ignore;
     desktop?.setMousePassthrough(ignore);
   }
@@ -426,66 +423,20 @@
     document.addEventListener("mouseleave", () => updateMousePassthrough(true));
   }
 
-  function flushWindowDrag() {
-    dragMoveFrame = null;
-    if (dragPointerId === null || !dragMovePending) return;
-    desktop?.moveDrag();
-    dragMovePending = false;
-  }
-
-  function beginWindowDrag(event) {
-    if (
-      event.button !== 0 ||
-      dragPointerId !== null ||
-      event.target.closest("button, input, label, select, textarea, a")
-    ) {
-      return;
-    }
-
-    dragPointerId = event.pointerId;
-    dragHandle = event.currentTarget;
-    dragMovePending = false;
-    dragHandle.classList.add("is-dragging");
-    document.documentElement.classList.add("is-window-dragging");
-    dragHandle.setPointerCapture(event.pointerId);
-    desktop?.beginDrag();
-    event.preventDefault();
-  }
-
-  function moveWindowDrag(event) {
-    if (event.pointerId !== dragPointerId) return;
-    dragMovePending = true;
-    if (dragMoveFrame === null) {
-      dragMoveFrame = requestAnimationFrame(flushWindowDrag);
-    }
-  }
-
-  function endWindowDrag(event) {
-    if (dragPointerId === null) return;
-    if (event && event.pointerId !== dragPointerId) return;
-
-    if (dragMoveFrame !== null) {
-      cancelAnimationFrame(dragMoveFrame);
-      dragMoveFrame = null;
-    }
-    if (dragMovePending) {
-      desktop?.moveDrag();
-      dragMovePending = false;
-    }
-
-    try {
-      if (dragHandle?.hasPointerCapture(dragPointerId)) {
-        dragHandle.releasePointerCapture(dragPointerId);
-      }
-    } catch {
-      // Pointer capture may already have been released by the window move.
-    }
-
-    dragHandle?.classList.remove("is-dragging");
-    dragPointerId = null;
-    dragHandle = null;
-    document.documentElement.classList.remove("is-window-dragging");
-    desktop?.endDrag();
+  function updatePetPointerState(cursor) {
+    if (!cursor) return;
+    const rect = elements.petStage.getBoundingClientRect();
+    const inside = (
+      cursor.x >= rect.left &&
+      cursor.x <= rect.right &&
+      cursor.y >= rect.top &&
+      cursor.y <= rect.bottom
+    );
+    if (inside === petPointerInside) return;
+    petPointerInside = inside;
+    elements.petStage.classList.toggle("is-pointer-over", inside);
+    if (inside) animationMachine?.pointerEnter();
+    else animationMachine?.pointerLeave();
   }
 
   elements.form.addEventListener("submit", (event) => {
@@ -566,17 +517,6 @@
     updatePreference({ showHide: elements.showHide.checked });
   });
 
-  elements.petStage.addEventListener("mouseenter", () => animationMachine?.pointerEnter());
-  elements.petStage.addEventListener("mouseleave", () => animationMachine?.pointerLeave());
-
-  for (const handle of [elements.bubbleHeader, elements.petStage]) {
-    handle.addEventListener("pointerdown", beginWindowDrag);
-    handle.addEventListener("pointermove", moveWindowDrag);
-    handle.addEventListener("pointerup", endWindowDrag);
-    handle.addEventListener("pointercancel", endWindowDrag);
-  }
-  window.addEventListener("blur", () => endWindowDrag());
-
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !elements.settingsPanel.hidden) setSettingsOpen(false);
   });
@@ -595,6 +535,7 @@
   });
   removeCursorListener = desktop?.onCursorPosition((cursor) => {
     gazeController.setCursor(cursor);
+    updatePetPointerState(cursor);
   });
 
   window.addEventListener("beforeunload", () => {

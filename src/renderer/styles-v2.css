@@ -8,6 +8,11 @@
   display: none !important;
 }
 
+#app {
+  contain: strict;
+  isolation: isolate;
+}
+
 .todo-bubble {
   width: 404px;
   height: 238px;
@@ -21,7 +26,7 @@
 }
 
 .bubble-header {
-  -webkit-app-region: no-drag;
+  -webkit-app-region: drag;
 }
 
 .title-sparkle {
@@ -267,18 +272,15 @@
 }
 
 .pet-stage {
-  cursor: grab;
   touch-action: none;
 }
 
-.pet-stage.is-dragging,
-.bubble-header.is-dragging {
-  cursor: grabbing;
-}
-
-html.is-window-dragging .todo-bubble,
-html.is-window-dragging .pet-visual {
-  transition: none;
+.pet-drag-region {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  cursor: grab;
+  -webkit-app-region: drag;
 }
 
 .pet-visual {
@@ -347,6 +349,7 @@ html.is-window-dragging .pet-visual {
 }
 
 .pet-toolbar {
+  -webkit-app-region: no-drag;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -358,18 +361,13 @@ html.is-window-dragging .pet-visual {
 }
 
 .pet-stage:hover .pet-toolbar:not([hidden]),
+.pet-stage.is-pointer-over .pet-toolbar:not([hidden]),
 .pet-toolbar:focus-within {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
   transform: translateY(0);
   transition-delay: 0s;
-}
-
-.pet-stage.is-dragging .pet-toolbar {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

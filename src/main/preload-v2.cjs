@@ -5,9 +5,7 @@ contextBridge.exposeInMainWorld("remielleDesktop", {
   setMousePassthrough: (ignore) => {
     ipcRenderer.send("window:set-ignore-mouse-events", Boolean(ignore));
   },
-  beginDrag: () => ipcRenderer.send("window:drag-start"),
-  moveDrag: () => ipcRenderer.send("window:drag-move"),
-  endDrag: () => ipcRenderer.send("window:drag-end"),
+
   hide: () => ipcRenderer.send("window:hide"),
   quit: () => ipcRenderer.send("window:quit"),
   toggleAlwaysOnTop: () => ipcRenderer.send("window:toggle-always-on-top"),
